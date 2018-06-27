@@ -47,6 +47,8 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 return array(
     'ext_code'      => 'mp_jfcx',
+    
+    'ext_icon'      => 'images/icon_jfcx.png',
 			
 	'forms' => array(
 	),
