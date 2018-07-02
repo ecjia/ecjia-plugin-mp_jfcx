@@ -99,7 +99,12 @@ class mp_jfcx extends PlatformAbstract
         return '';
     }
 	
-    public function event_reply() {
+    /**
+     * 事件回复
+     * {@inheritDoc}
+     * @see \Ecjia\App\Platform\Plugin\PlatformAbstract::eventReply()
+     */
+    public function eventReply() {
     	$user_db = RC_Loader::load_app_model('users_model', 'user');
     	$connect_db = RC_Loader::load_app_model('connect_user_model', 'connect');
     	RC_Loader::load_app_class('platform_account', 'platform', false);
