@@ -50,6 +50,9 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 use Ecjia\App\Platform\Plugin\PlatformAbstract;
+use Ecjia\App\Wechat\WechatRecord;
+use Ecjia\App\Wechat\WechatUser;
+
 
 class mp_jfcx extends PlatformAbstract
 {    
@@ -105,70 +108,100 @@ class mp_jfcx extends PlatformAbstract
      * @see \Ecjia\App\Platform\Plugin\PlatformAbstract::eventReply()
      */
     public function eventReply() {
-    	$user_db = RC_Loader::load_app_model('users_model', 'user');
-    	$connect_db = RC_Loader::load_app_model('connect_user_model', 'connect');
-    	RC_Loader::load_app_class('platform_account', 'platform', false);
-    	RC_Loader::load_app_class('wechat_user', 'wechat', false);
-    	
-    	$time = RC_Time::gmtime();
-    	$openid = $this->from_username;
-    	$uuid = trim($_GET['uuid']);
-    	$account = platform_account::make($uuid);
-    	$wechat_id = $account->getAccountID();
-    	$wechat_user = new wechat_user($wechat_id, $openid);
-    
-    	$ect_uid = $wechat_user->getUserId();
-    	$unionid = $wechat_user->getUnionid();
-    	$connect_user = new \Ecjia\App\Connect\ConnectUser('sns_wechat', $unionid, 'user');
-    	$getUserId = $connect_user->getUserId();
-    	
-    	if (!$connect_user->checkUser()) {
-    		//合并ect_uid旧的数据处理
-    		if(!empty($ect_uid)){
-    			$query = $connect_db->where(array('open_id'=>$unionid, 'connect_code'=>'sns_wechat'))->count();
-    			if($query > 0){
-    				$connect_db->where(array('open_id' => $unionid, 'connect_code'=>'sns_wechat'))->update(array('user_id' => $ect_uid));
-    			}else{
-    				$data['connect_code'] = 'sns_wechat';
-    				$data['user_id'] = $ect_uid;
-    				$data['is_admin'] = 0;
-    				$data['open_id'] = $unionid;
-    				$data['create_at'] = $time;
-    				$connect_db->insert($data);
-    			}
-    		}
-			//组合类似模板信息
-    		$articles = array();
-    		$articles[0]['Title'] = '未绑定';
-    		$articles[0]['PicUrl'] = '';
-    		$articles[0]['Description'] = '抱歉，目前您还未进行账号绑定，需点击该链接进行绑定操作';
-    		$articles[0]['Url'] = RC_Uri::url('wechat/mobile_userbind/init',array('openid' => $openid, 'uuid' => $uuid));
-    		$count = count($articles);
-    		$content = array(
-    			'ToUserName'    => $this->from_username,
-    			'FromUserName'  => $this->to_username,
-    			'CreateTime'    => SYS_TIME,
-    			'MsgType'       => 'news',
-    			'ArticleCount'	=> $count,
-    			'Articles'		=> $articles
-    		);
-    	} else {
-    		$field = 'rank_points, pay_points, user_money, user_rank';
-    		$data = $user_db->field($field)->find(array('user_id' => $getUserId));
-    		if (!empty($data)) {
-    			$msg = "您的余额：".price_format($data['user_money'], false). "\n".
-    					"等级积分：".$data['rank_points']."\n".
-    					"消费积分：".$data['pay_points'];
-    			$content = array(
-    				'ToUserName'    => $this->from_username,
-    				'FromUserName'  => $this->to_username,
-    				'CreateTime'    => SYS_TIME,
-    				'MsgType'       => 'text',
-    				'Content'		=> $msg
-    			);
-    		}
-    	}
-        return $content;
+//    	$user_db = RC_Loader::load_app_model('users_model', 'user');
+//    	$connect_db = RC_Loader::load_app_model('connect_user_model', 'connect');
+//    	RC_Loader::load_app_class('platform_account', 'platform', false);
+//    	RC_Loader::load_app_class('wechat_user', 'wechat', false);
+//
+//    	$time = RC_Time::gmtime();
+//    	$openid = $this->from_username;
+//    	$uuid = trim($_GET['uuid']);
+//    	$account = platform_account::make($uuid);
+//    	$wechat_id = $account->getAccountID();
+//    	$wechat_user = new wechat_user($wechat_id, $openid);
+//
+//    	$ect_uid = $wechat_user->getUserId();
+//    	$unionid = $wechat_user->getUnionid();
+//    	$connect_user = new \Ecjia\App\Connect\ConnectUser('sns_wechat', $unionid, 'user');
+//    	$getUserId = $connect_user->getUserId();
+
+        $wechatUUID = new \Ecjia\App\Wechat\WechatUUID();
+
+        $wechat_id = $wechatUUID->getWechatID();
+        $uuid   = $wechatUUID->getUUID();
+        $openid = $this->getMessage()->get('FromUserName');
+
+        $wechat_user = new WechatUser($wechat_id, $openid);
+
+//        $field = 'rank_points, pay_points, user_money, user_rank';
+//        $data = RC_DB::table('user')->where(array('user_id' => $openid))->get();
+
+
+        if (! $this->hasBindUser()) {
+            return $this->forwardCommand('mp_userbind');
+        } else{
+            $userid = $wechat_user->getEcjiaUserId();
+
+            $data['pay_points'] = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('pay_points');
+            $data['rank_points'] = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('rank_points');
+            $articles = [
+                'Title' => '已绑定',
+                'Description' => "尊敬的ECJia到家用户:\n您的等级积分：".$data['rank_points']."\n".
+                    "消费积分：".$data['pay_points'],
+                'Url'           => RC_Uri::url('platform/plugin/show', array('handle' => 'mp_checkin/init', 'openid' => $openid, 'uuid' => $uuid)),
+                'PicUrl' => RC_Plugin::plugin_dir_url(__FILE__) . '/images/icon_jfcx.png',
+            ];
+            return WechatRecord::News_reply($this->getMessage(), $articles['Title'], $articles['Description'], $articles['Url'], $articles['PicUrl']);
+        }
+
+
+//        if (!$connect_user->checkUser()) {
+//    		//合并ect_uid旧的数据处理
+//    		if(!empty($ect_uid)){
+//    			$query = $connect_db->where(array('open_id'=>$unionid, 'connect_code'=>'sns_wechat'))->count();
+//    			if($query > 0){
+//    				$connect_db->where(array('open_id' => $unionid, 'connect_code'=>'sns_wechat'))->update(array('user_id' => $ect_uid));
+//    			}else{
+//    				$data['connect_code'] = 'sns_wechat';
+//    				$data['user_id'] = $ect_uid;
+//    				$data['is_admin'] = 0;
+//    				$data['open_id'] = $unionid;
+//    				$data['create_at'] = $time;
+//    				$connect_db->insert($data);
+//    			}
+//    		}
+//			//组合类似模板信息
+//    		$articles = array();
+//    		$articles[0]['Title'] = '未绑定';
+//    		$articles[0]['PicUrl'] = '';
+//    		$articles[0]['Description'] = '抱歉，目前您还未进行账号绑定，需点击该链接进行绑定操作';
+//    		$articles[0]['Url'] = RC_Uri::url('wechat/mobile_userbind/init',array('openid' => $openid, 'uuid' => $uuid));
+//    		$count = count($articles);
+//    		$content = array(
+//    			'ToUserName'    => $this->from_username,
+//    			'FromUserName'  => $this->to_username,
+//    			'CreateTime'    => SYS_TIME,
+//    			'MsgType'       => 'news',
+//    			'ArticleCount'	=> $count,
+//    			'Articles'		=> $articles
+//    		);
+//    	} else {
+//    		$field = 'rank_points, pay_points, user_money, user_rank';
+//    		$data = $user_db->field($field)->find(array('user_id' => $getUserId));
+//    		if (!empty($data)) {
+//    			$msg = "您的余额：".price_format($data['user_money'], false). "\n".
+//    					"等级积分：".$data['rank_points']."\n".
+//    					"消费积分：".$data['pay_points'];
+//    			$content = array(
+//    				'ToUserName'    => $this->from_username,
+//    				'FromUserName'  => $this->to_username,
+//    				'CreateTime'    => SYS_TIME,
+//    				'MsgType'       => 'text',
+//    				'Content'		=> $msg
+//    			);
+//    		}
+//    	}
+//        return $content;
     }
     
 }
