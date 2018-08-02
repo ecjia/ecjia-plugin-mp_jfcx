@@ -53,7 +53,7 @@ return array(
 
     'support_platform' => 'wechat', //仅支持微信公众平台
 
-    'support_platform_type' => ['service', 'test'], //支持微信公众号类型
+    'support_platform_type' => ['service', 'unauthorized', 'subscribe', 'test'], //支持微信公众号类型
 
     'support_type'  => Ecjia\App\Platform\Plugin\PlatformAbstract::TypeAdmin,
 
