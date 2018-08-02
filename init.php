@@ -1,4 +1,5 @@
 <?php
+use Ecjia\App\Wechat\WechatUser;
 //
 //    ______         ______           __         __         ______
 //   /\  ___\       /\  ___\         /\_\       /\_\       /\  __ \
@@ -44,96 +45,40 @@
 //
 //  ---------------------------------------------------------------------------------
 //
-/**
- * 积分查询
- */
-defined('IN_ECJIA') or exit('No permission resources.');
-
-use Ecjia\App\Platform\Plugin\PlatformAbstract;
-use Ecjia\App\Wechat\WechatRecord;
-use Ecjia\App\Wechat\WechatUser;
-
-
-class mp_jfcx extends PlatformAbstract
-{    
-
-    /**
-     * 获取插件代号
-     *
-     * @see \Ecjia\System\Plugin\PluginInterface::getCode()
-     */
-    public function getCode()
-    {
-        return $this->loadConfig('ext_code');
-    }
+RC_Loader::load_app_class('platform_interface', 'platform', false);
+class mp_jfcx_init implements platform_interface {
     
-    /**
-     * 加载配置文件
-     *
-     * @see \Ecjia\System\Plugin\PluginInterface::loadConfig()
-     */
-    public function loadConfig($key = null, $default = null)
-    {
-        return $this->loadPluginData(RC_Plugin::plugin_dir_path(__FILE__) . 'config.php', $key, $default);
-    }
-    
-    /**
-     * 加载语言包
-     *
-     * @see \Ecjia\System\Plugin\PluginInterface::loadLanguage()
-     */
-    public function loadLanguage($key = null, $default = null)
-    {
-        $locale = RC_Config::get('system.locale');
-        
-        return $this->loadPluginData(RC_Plugin::plugin_dir_path(__FILE__) . '/languages/'.$locale.'/plugin.lang.php', $key, $default);
-    }
-    
-    /**
-     * 获取iconUrl
-     * {@inheritDoc}
-     * @see \Ecjia\App\Platform\Plugin\PlatformAbstract::getPluginIconUrl()
-     */
-    public function getPluginIconUrl()
-    {
-        if ($this->loadConfig('ext_icon')) {
-            return RC_Plugin::plugin_dir_url(__FILE__) . $this->loadConfig('ext_icon');
-        }
-        return '';
-    }
-	
-    /**
-     * 事件回复
-     * {@inheritDoc}
-     * @see \Ecjia\App\Platform\Plugin\PlatformAbstract::eventReply()
-     */
-    public function eventReply() {
+    public function action() {
 
         $wechatUUID = new \Ecjia\App\Wechat\WechatUUID();
 
         $wechat_id = $wechatUUID->getWechatID();
-        $uuid   = $wechatUUID->getUUID();
-        $openid = $this->getMessage()->get('FromUserName');
+        // 获取GET请求数据
+        $openid = trim($_GET['openid']);
+        $uuid   = trim($_GET['uuid']);
 
         $wechat_user = new WechatUser($wechat_id, $openid);
 
-        if (! $this->hasBindUser()) {
-            return $this->forwardCommand('mp_userbind');
-        } else {
-            $userid = $wechat_user->getEcjiaUserId();
+        $userid = $wechat_user->getEcjiaUserId();
 
-            $data['pay_points'] = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('pay_points');
-            $articles = [
-                'Title' => '积分查询',
-                'Description' => sprintf("尊敬的%s用户:\n您的消费积分：%s", ecjia::config('shop_name'), $data['pay_points']),
-                'Url'           => RC_Uri::url('platform/plugin/show', array('handle' => 'mp_jfcx/init', 'openid' => $openid, 'uuid' => $uuid)),
-                'PicUrl' => RC_Plugin::plugin_dir_url(__FILE__) . '/images/icon_jfcx.png',
-            ];
-            return WechatRecord::News_reply($this->getMessage(), $articles['Title'], $articles['Description'], $articles['Url'], $articles['PicUrl']);
-        }
+        $pay_points = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('pay_points');
 
-    }
-    
+
+        $css1_url = RC_Plugin::plugins_url('css/animate.css', __FILE__);
+        $css2_url = RC_Plugin::plugins_url('css/jquery.toast.min.css', __FILE__);
+        $css3_url = RC_Plugin::plugins_url('css/details.min.css', __FILE__);
+
+
+        $jq_url = RC_Plugin::plugins_url('js/jquery.js', __FILE__);
+    	ecjia_front::$controller->assign('jq_url',$jq_url);
+    	ecjia_front::$controller->assign('css1_url',$css1_url);
+        ecjia_front::$controller->assign('css2_url',$css2_url);
+        ecjia_front::$controller->assign('css3_url',$css3_url);
+        ecjia_front::$controller->assign('pay_points',$pay_points);
+    	
+    	$tplpath = RC_Plugin::plugin_dir_path(__FILE__) . 'templates/jfcx_index.dwt.php';
+        ecjia_front::$controller->display($tplpath);
+	}
 }
 
 // end
