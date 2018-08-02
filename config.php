@@ -45,6 +45,7 @@
 //  ---------------------------------------------------------------------------------
 //
 defined('IN_ECJIA') or exit('No permission resources.');
+
 return array(
     'ext_code'      => 'mp_jfcx',
 
@@ -52,7 +53,9 @@ return array(
 
     'support_platform' => 'wechat', //仅支持微信公众平台
 
-    'support_platform_type' => ['service'], //仅支持微信服务号
+    'support_platform_type' => ['service', 'test'], //支持微信公众号类型
+
+    'support_type'  => Ecjia\App\Platform\Plugin\PlatformAbstract::TypeAdmin,
 
     'forms' => array(
     ),
