@@ -124,8 +124,8 @@ class mp_jfcx extends PlatformAbstract
 
             $data['pay_points'] = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('pay_points');
             $articles = [
-                'Title' => '已绑定',
-                'Description' => "尊敬的ECJia到家用户:\n您的消费积分：".$data['pay_points'],
+                'Title' => '积分查询',
+                'Description' => sprintf("尊敬的%s用户:\n您的消费积分：%s", ecjia::config('shop_name'), $data['pay_points']),
                 'Url'           => RC_Uri::url('platform/plugin/show', array('handle' => 'mp_checkin/init', 'openid' => $openid, 'uuid' => $uuid)),
                 'PicUrl' => RC_Plugin::plugin_dir_url(__FILE__) . '/images/icon_jfcx.png',
             ];
