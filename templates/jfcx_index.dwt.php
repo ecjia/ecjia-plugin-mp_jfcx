@@ -25,7 +25,7 @@
                     <i class="btn-icon"></i>
                     <span class="btn-text">已签到</span>
                 </div>
-                <div class="info-tips">已连续签到1天，继续加油哦</div>	            </div>
+                <div class="info-tips">已累计签到1天，继续加油哦</div>	            </div>
         </div>
         <!--        <a href="javascript:void(0)" class="info-help">帮助说明</a>-->
     </div>
@@ -52,8 +52,8 @@
                 </div>
                 {/if}
                 {if $value.pay_points lt 0}
-                <div class="list-item-right add">
-                    -{$value.pay_points}
+                <div class="list-item-right">
+                    {$value.pay_points}
                 </div>
                 {/if}
             </div>
