@@ -2,10 +2,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
-<meta http-equiv="X-UA-Compatible" content="IE=8,IE=9,IE=10,IE=11"/>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>积分查看</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=8,IE=9,IE=10,IE=11"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>积分查看</title>
     <link rel="stylesheet" type="text/css" href="{$css1_url}">
     <link rel="stylesheet" type="text/css" href="{$css2_url}">
     <link rel="stylesheet" type="text/css" href="{$css3_url}">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="info-tips">已连续签到1天，继续加油哦</div>	            </div>
         </div>
-<!--        <a href="javascript:void(0)" class="info-help">帮助说明</a>-->
+        <!--        <a href="javascript:void(0)" class="info-help">帮助说明</a>-->
     </div>
     <div class="details-notice">
     </div>
@@ -36,7 +36,7 @@
         <div class="place-holder"></div>
         <div class="list-box" id="listBox">
 
-        {foreach $points_info as $key => $value}
+            {foreach $points_info as $key => $value}
 
             {if $value.pay_points eq 0}
                 {continue}
@@ -60,38 +60,7 @@
 
             {/if}
 
-        {/foreach}
-<!--            <div class="list-item">-->
-<!--                <div class="cell list-item-left">-->
-<!--                    <div class="list-item-text">无线签到翻牌积分奖励</div>-->
-<!--                    <div class="list-item-time">2018-07-25 15:36:58</div>-->
-<!--                </div>-->
-<!--                <div class="list-item-right add">-->
-<!--                    +1-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="list-item">-->
-<!--                <div class="cell list-item-left">-->
-<!--                    <div class="list-item-text">购物送积分(商品号:6514034)</div>-->
-<!--                    <div class="list-item-time">2018-07-22 09:54:36</div>-->
-<!--                </div>-->
-<!--                <div class="list-item-right add">-->
-<!--                    +15-->
-<!--                </div>-->
-<!--            </div>-->
-<!---->
-<!--            <div class="list-item">-->
-<!--                <div class="cell list-item-left">-->
-<!--                    <div class="list-item-text">订单77548388942使用积分992个</div>-->
-<!--                    <div class="list-item-time">2018-07-14 17:36:31</div>-->
-<!--                </div>-->
-<!--                <div class="list-item-right">-->
-<!--                    -992-->
-<!--                </div>-->
-<!--            </div>-->
-
-
-
+            {/foreach}
 
         </div>
     </div>
