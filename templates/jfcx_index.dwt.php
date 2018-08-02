@@ -40,7 +40,6 @@
 
             {if $value.pay_points eq 0}
                 {continue}
-
             {else}
             <div class="list-item">
                 <div class="cell list-item-left">
@@ -52,7 +51,7 @@
                     +{$value.pay_points}
                 </div>
                 {/if}
-                {if $value.pay_point lt 0}
+                {if $value.pay_points lt 0}
                 <div class="list-item-right add">
                     -{$value.pay_points}
                 </div>
