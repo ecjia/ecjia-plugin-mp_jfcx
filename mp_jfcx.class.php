@@ -127,7 +127,7 @@ class mp_jfcx extends PlatformAbstract
                 'Title' => '积分查询',
                 'Description' => sprintf("尊敬的%s用户:\n您的消费积分：%s", ecjia::config('shop_name'), $data['pay_points']),
                 'Url'           => RC_Uri::url('platform/plugin/show', array('handle' => 'mp_jfcx/init', 'openid' => $openid, 'uuid' => $uuid)),
-                'PicUrl' => RC_Plugin::plugin_dir_url(__FILE__) . '/images/icon_jfcx.png',
+                'PicUrl' => RC_Plugin::plugin_dir_url(__FILE__) . '/images/wechat_thumb_jfcx.png',
             ];
             return WechatRecord::News_reply($this->getMessage(), $articles['Title'], $articles['Description'], $articles['Url'], $articles['PicUrl']);
         }
