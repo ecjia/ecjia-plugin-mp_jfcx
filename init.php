@@ -62,9 +62,8 @@ class mp_jfcx_init implements platform_interface {
         $userid = $wechat_user->getEcjiaUserId();
 
         $pay_points = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('pay_points');
-        $points_info = RC_DB::table('account_log')->where('user_id', '=', $userid)->get();
+        $points_info = RC_DB::table('account_log')->where('user_id', '=', $userid)->orderBy('change_time', 'desc')->get();
 
-//dd($points_info,1);
         $css1_url = RC_Plugin::plugins_url('css/animate.css', __FILE__);
         $css2_url = RC_Plugin::plugins_url('css/jquery.toast.min.css', __FILE__);
         $css3_url = RC_Plugin::plugins_url('css/details.min.css', __FILE__);
