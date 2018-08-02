@@ -44,7 +44,7 @@
             <div class="list-item">
                 <div class="cell list-item-left">
                     <div class="list-item-text">{$value.change_desc}</div>
-                    <div class="list-item-time">{$value.change_time|date_format:"%Y-%m-%d %H:%M:%S"}</div>
+                    <div class="list-item-time">{$value.change_time}</div>
                 </div>
                 {if $value.pay_points gt 0}
                 <div class="list-item-right add">
