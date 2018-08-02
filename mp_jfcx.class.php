@@ -109,17 +109,19 @@ class mp_jfcx extends PlatformAbstract
      */
     public function eventReply() {
 
-        $wechatUUID = new \Ecjia\App\Wechat\WechatUUID();
-
-        $wechat_id = $wechatUUID->getWechatID();
-        $uuid   = $wechatUUID->getUUID();
-        $openid = $this->getMessage()->get('FromUserName');
-
-        $wechat_user = new WechatUser($wechat_id, $openid);
 
         if (! $this->hasBindUser()) {
             return $this->forwardCommand('mp_userbind');
         } else {
+
+            $wechatUUID = new \Ecjia\App\Wechat\WechatUUID();
+
+            $wechat_id = $wechatUUID->getWechatID();
+            $uuid   = $wechatUUID->getUUID();
+            $openid = $this->getMessage()->get('FromUserName');
+
+            $wechat_user = new WechatUser($wechat_id, $openid);
+
             $userid = $wechat_user->getEcjiaUserId();
 
             $data['pay_points'] = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('pay_points');

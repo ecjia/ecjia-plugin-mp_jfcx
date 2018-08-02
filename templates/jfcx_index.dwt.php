@@ -35,34 +35,64 @@
         <div class="list-head" id="listHead"><div class="list-head-inner">积分收支明细</div></div>
         <div class="place-holder"></div>
         <div class="list-box" id="listBox">
+
+        {foreach $points_info as $key => $value}
+
+            {if $value.pay_points eq 0}
+                {continue}
+
+            {else}
             <div class="list-item">
                 <div class="cell list-item-left">
-                    <div class="list-item-text">无线签到翻牌积分奖励</div>
-                    <div class="list-item-time">2018-07-25 15:36:58</div>
+                    <div class="list-item-text">{$value.change_desc}</div>
+                    <div class="list-item-time">{$value.change_time|date_format:"%Y-%m-%d %H:%M:%S"}</div>
                 </div>
+                {if $value.pay_points gt 0}
                 <div class="list-item-right add">
-                    +1
+                    +{$value.pay_points}
                 </div>
-            </div>
-            <div class="list-item">
-                <div class="cell list-item-left">
-                    <div class="list-item-text">购物送积分(商品号:6514034)</div>
-                    <div class="list-item-time">2018-07-22 09:54:36</div>
-                </div>
+                {/if}
+                {if $value.pay_point lt 0}
                 <div class="list-item-right add">
-                    +15
+                    -{$value.pay_points}
                 </div>
+                {/if}
             </div>
 
-            <div class="list-item">
-                <div class="cell list-item-left">
-                    <div class="list-item-text">订单77548388942使用积分992个</div>
-                    <div class="list-item-time">2018-07-14 17:36:31</div>
-                </div>
-                <div class="list-item-right">
-                    -992
-                </div>
-            </div>
+            {/if}
+
+        {/foreach}
+<!--            <div class="list-item">-->
+<!--                <div class="cell list-item-left">-->
+<!--                    <div class="list-item-text">无线签到翻牌积分奖励</div>-->
+<!--                    <div class="list-item-time">2018-07-25 15:36:58</div>-->
+<!--                </div>-->
+<!--                <div class="list-item-right add">-->
+<!--                    +1-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="list-item">-->
+<!--                <div class="cell list-item-left">-->
+<!--                    <div class="list-item-text">购物送积分(商品号:6514034)</div>-->
+<!--                    <div class="list-item-time">2018-07-22 09:54:36</div>-->
+<!--                </div>-->
+<!--                <div class="list-item-right add">-->
+<!--                    +15-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="list-item">-->
+<!--                <div class="cell list-item-left">-->
+<!--                    <div class="list-item-text">订单77548388942使用积分992个</div>-->
+<!--                    <div class="list-item-time">2018-07-14 17:36:31</div>-->
+<!--                </div>-->
+<!--                <div class="list-item-right">-->
+<!--                    -992-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+
 
         </div>
     </div>
