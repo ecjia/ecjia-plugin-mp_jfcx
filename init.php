@@ -64,6 +64,11 @@ class mp_jfcx_init implements platform_interface {
         $pay_points = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('pay_points');
         $points_info = RC_DB::table('account_log')->where('user_id', '=', $userid)->orderBy('change_time', 'desc')->get();
 
+        foreach ($points_info as $key => $value){
+            $new_points_info[$key] = $value;
+            $new_points_info[$key]['change_time'] = RC_Time::local_date('Y-m-d H:i:s', $new_points_info[$key]['change_time']);
+        }
+
         $css1_url = RC_Plugin::plugins_url('css/animate.css', __FILE__);
         $css2_url = RC_Plugin::plugins_url('css/jquery.toast.min.css', __FILE__);
         $css3_url = RC_Plugin::plugins_url('css/details.min.css', __FILE__);
@@ -75,7 +80,7 @@ class mp_jfcx_init implements platform_interface {
         ecjia_front::$controller->assign('css2_url',$css2_url);
         ecjia_front::$controller->assign('css3_url',$css3_url);
         ecjia_front::$controller->assign('pay_points',$pay_points);
-        ecjia_front::$controller->assign('points_info',$points_info);
+        ecjia_front::$controller->assign('new_points_info',$new_points_info);
 
 
         $tplpath = RC_Plugin::plugin_dir_path(__FILE__) . 'templates/jfcx_index.dwt.php';

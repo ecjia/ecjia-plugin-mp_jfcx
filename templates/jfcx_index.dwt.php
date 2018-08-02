@@ -36,7 +36,7 @@
         <div class="place-holder"></div>
         <div class="list-box" id="listBox">
 
-            {foreach $points_info as $key => $value}
+            {foreach $new_points_info as $key => $value}
 
             {if $value.pay_points eq 0}
                 {continue}
