@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" href="{$css2_url}">
     <link rel="stylesheet" type="text/css" href="{$css3_url}">
 
-
 </head>
 <body>
 
@@ -23,9 +22,22 @@
                 </div>
                 <div class="info-btn">
                     <i class="btn-icon"></i>
-                    <span class="btn-text">已签到</span>
+                    <span class="btn-text">
+                        {if $today eq $lastCheckinDay}
+                            今日已签到
+                        {else}
+                            今日未签到
+                        {/if}
+                    </span>
                 </div>
-                <div class="info-tips">已累计签到1天，继续加油哦</div>	            </div>
+                <div class="info-tips">
+                    {if $count eq 0}
+                        您还未签到过哦，请在微信回复签到即可签到！
+                    {else}
+                    已累计签到{$count}次，继续加油哦！
+                    {/if}
+                </div>
+            </div>
         </div>
         <!--        <a href="javascript:void(0)" class="info-help">帮助说明</a>-->
     </div>
@@ -64,7 +76,10 @@
 
         </div>
     </div>
-    <div style="height:5px;"></div>
+    <div style="height:5px;"></div>。
+
+
+
     <div class="loading-more hide">
         <div class="loading-ani">
                 <span class="loading-more-l">
