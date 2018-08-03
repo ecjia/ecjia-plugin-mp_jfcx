@@ -76,23 +76,6 @@
 
         </div>
     </div>
-    <div style="height:5px;"></div>。
-
-
-
-    <div class="loading-more hide">
-        <div class="loading-ani">
-                <span class="loading-more-l">
-                    <i class="load-circel"></i>
-                    <i class="load-logo"></i>
-                </span>
-            <span class="load-text">加载中...</span>
-        </div>
-    </div>
-    <div class="ending-section hide">
-        <div class="ending-title">加载更多</div>
-    </div>
-    <div style="height:5px;"></div>
 </div>
 
 <script type="text/javascript" src="{$jq_url}"></script>
