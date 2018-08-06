@@ -1,5 +1,4 @@
 <?php
-use Ecjia\App\Wechat\WechatUser;
 //
 //    ______         ______           __         __         ______
 //   /\  ___\       /\  ___\         /\_\       /\_\       /\  __ \
@@ -46,25 +45,39 @@ use Ecjia\App\Wechat\WechatUser;
 //  ---------------------------------------------------------------------------------
 //
 use Ecjia\App\Platform\Frameworks\Contracts\PluginPageInterface;
+use Ecjia\App\Platform\Frameworks\Controller\PluginPageController;
 
-class mp_jfcx_init implements PluginPageInterface
+class mp_jfcx_init extends PluginPageController implements PluginPageInterface
 {
+    public function init()
+    {
+        //设置插件目录
+        $this->setPluginPath(__FILE__);
 
-    public function action() {
+        //设置插件资源URL
+        $this->assginPluginStyleUrl('jquery_js', 'js/jquery.js');
 
-        $wechatUUID = new \Ecjia\App\Wechat\WechatUUID();
+        $this->assginPluginStyleUrl('animate_css', 'css/animate.css');
+        $this->assginPluginStyleUrl('jquery_toast_min_css', 'css/jquery.toast.min.css');
+        $this->assginPluginStyleUrl('details_min_css', 'css/details.min.css');
 
-        $wechat_id = $wechatUUID->getWechatID();
-        // 获取GET请求数据
-        $openid = trim($_GET['openid']);
-        $uuid   = trim($_GET['uuid']);
+    }
 
-        $wechat_user = new WechatUser($wechat_id, $openid);
+    public function action()
+    {
+        //初始化资源URL加载
+        $this->init();
 
-        $userid = $wechat_user->getEcjiaUserId();
+        $uuid = trim($_GET['uuid']);
 
-        $pay_points = RC_DB::table('users')->where('user_id', '=', $userid)->pluck('pay_points');
-        $points_info = RC_DB::table('account_log')->where('user_id', '=', $userid)->orderBy('change_time', 'desc')->get();
+        $platform_account = new Ecjia\App\Platform\Frameworks\Platform\Account($uuid);
+
+        $wechat_id = $platform_account->getAccountID();
+
+        ecjia_front::$controller->assign('title', sprintf('%s - %s - %s', '积分查看', $platform_account->getAccountName(), ecjia::config('shop_name')));
+
+        $pay_points = RC_DB::table('users')->where('user_id', '=', $wechat_id)->pluck('pay_points');
+        $points_info = RC_DB::table('account_log')->where('user_id', '=', $wechat_id)->orderBy('change_time', 'desc')->get();
 
         $count = 0;
         foreach ($points_info as $key => $value)
@@ -79,31 +92,18 @@ class mp_jfcx_init implements PluginPageInterface
         $today = RC_Time::local_date('Y-m-d', RC_Time::gmtime());
 
         // 最近一次签到时间
-        $lastCheckinDay = RC_DB::table('account_log')->where('user_id', '=', $userid)
+        $lastCheckinDay = RC_DB::table('account_log')->where('user_id', '=', $wechat_id)
             ->orderBy('change_time', 'desc')
             ->pluck('change_time');
         $lastCheckinDay =  RC_Time::local_date('Y-m-d', $lastCheckinDay);
 
-        $css1_url = RC_Plugin::plugins_url('css/animate.css', __FILE__);
-        $css2_url = RC_Plugin::plugins_url('css/jquery.toast.min.css', __FILE__);
-        $css3_url = RC_Plugin::plugins_url('css/details.min.css', __FILE__);
-        $image1_url = RC_Plugin::plugins_url('images/icon_jf.png', __FILE__);
-        $jq_url = RC_Plugin::plugins_url('js/jquery.js', __FILE__);
-
-    	ecjia_front::$controller->assign('jq_url',$jq_url);
-    	ecjia_front::$controller->assign('css1_url',$css1_url);
-        ecjia_front::$controller->assign('css2_url',$css2_url);
-        ecjia_front::$controller->assign('css3_url',$css3_url);
         ecjia_front::$controller->assign('pay_points',$pay_points);
         ecjia_front::$controller->assign('new_points_info',$new_points_info);
         ecjia_front::$controller->assign('count',$count);
         ecjia_front::$controller->assign('today',$today);
         ecjia_front::$controller->assign('lastCheckinDay',$lastCheckinDay);
 
-
-
-        $tplpath = RC_Plugin::plugin_dir_path(__FILE__) . 'templates/jfcx_index.dwt.php';
-        ecjia_front::$controller->display($tplpath);
+        ecjia_front::$controller->display($this->getPluginFilePath('templates/jfcx_index.dwt.php'));
 	}
 }
 
