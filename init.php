@@ -45,9 +45,11 @@ use Ecjia\App\Wechat\WechatUser;
 //
 //  ---------------------------------------------------------------------------------
 //
-RC_Loader::load_app_class('platform_interface', 'platform', false);
-class mp_jfcx_init implements platform_interface {
-    
+use Ecjia\App\Platform\Frameworks\Contracts\PluginPageInterface;
+
+class mp_jfcx_init implements PluginPageInterface
+{
+
     public function action() {
 
         $wechatUUID = new \Ecjia\App\Wechat\WechatUUID();
