@@ -92,9 +92,9 @@ class mp_jfcx_init extends PluginPageController implements PluginPageInterface
         $today = RC_Time::local_date('Y-m-d', RC_Time::gmtime());
 
         // 最近一次签到时间
-        $lastCheckinDay = RC_DB::table('account_log')->where('user_id', '=', $wechat_id)
-            ->orderBy('change_time', 'desc')
-            ->pluck('change_time');
+        $lastCheckinDay = RC_DB::table('wechat_point')->where('openid', '=', $openid)
+            ->orderBy('createtime', 'desc')
+            ->pluck('createtime');
         $lastCheckinDay =  RC_Time::local_date('Y-m-d', $lastCheckinDay);
 
         $count = RC_DB::table('wechat_point')->where('openid', '=', $openid)->where('keywords', '=', 'mp_checkin')->count();
