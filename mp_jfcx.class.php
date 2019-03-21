@@ -76,19 +76,7 @@ class mp_jfcx extends PlatformAbstract
     {
         return $this->loadPluginData(RC_Plugin::plugin_dir_path(__FILE__) . 'config.php', $key, $default);
     }
-    
-    /**
-     * 加载语言包
-     *
-     * @see \Ecjia\System\Plugin\PluginInterface::loadLanguage()
-     */
-    public function loadLanguage($key = null, $default = null)
-    {
-        $locale = 'zh_CN';
-        
-        return $this->loadPluginData(RC_Plugin::plugin_dir_path(__FILE__) . '/languages/'.$locale.'/plugin.lang.php', $key, $default);
-    }
-    
+
     /**
      * 获取iconUrl
      * {@inheritDoc}

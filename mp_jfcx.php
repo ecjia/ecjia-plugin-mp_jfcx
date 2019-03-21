@@ -73,6 +73,7 @@ class plugin_mp_jfcx {
 }
 
 Ecjia_PluginManager::extend('mp_jfcx', function() {
+    RC_Locale::loadPluginTextdomain('mp_jfcx');
     require_once RC_Plugin::plugin_dir_path(__FILE__) . 'mp_jfcx.class.php';
     return new mp_jfcx();
 });
