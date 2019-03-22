@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 积分查询 1.18.0\n"
 "Report-Msgid-Bugs-To: https://www.ecjia.com/support/plugin/\n"
-"POT-Creation-Date: 2019-03-20 09:19:27+00:00\n"
+"POT-Creation-Date: 2019-03-22 03:53:37+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,11 +18,11 @@ msgstr ""
 
 #. #-#-#-#-#  mp_jfcx.pot (积分查询 1.18.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: mp_jfcx.class.php:129
+#: mp_jfcx.class.php:117
 msgid "积分查询"
 msgstr ""
 
-#: mp_jfcx.class.php:130
+#: mp_jfcx.class.php:118
 msgid ""
 "尊敬的%s用户:\n"
 "您的消费积分：%s"
